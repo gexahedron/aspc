@@ -1,42 +1,29 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>Almost Strong Petersen colouring (2024 version)</title>
   <style>
-    body {
-      font-family: Verdana, Geneva, sans-serif;
-      color: gray;
-      margin: 20px;
-    }
-    h3 {
-      text-align: center;
-    }
-    .center {
-      text-align: center;
-    }
+    body { font-family: Verdana, Geneva, sans-serif; color: gray; margin: 20px; }
+    h3 { text-align: center; }
+    .center { text-align: center; }
     model-viewer {
-      width: 1000px;
-      height: 500px;
-      max-width: 100%;
-      display: block;
-      margin: 0 auto;
+      width: 1000px; height: 500px; max-width: 100%;
+      display: block; margin: 0 auto;
     }
     .ar-button {
       display: inline-block;
-      background-color: #dcffc2;
-      border: none;
-      border-radius: 12px;
+      background: #dcffc2;
+      border: none; border-radius: 14px;
       margin-top: 20px;
-      padding: 20px 40px;
-      font-size: 28px;
-      font-weight: bold;
+      padding: 22px 48px;
+      font-size: 32px; font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: transform .06s ease, background-color .2s ease;
     }
-    .ar-button:hover {
-      background-color: #b8f59e;
-    }
+    .ar-button:hover { background: #c9ffad; }
+    .ar-button:active { transform: translateY(1px); }
+    .ar-button[disabled] { opacity: .55; cursor: not-allowed; }
   </style>
   <!-- model-viewer library -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"></script>
@@ -46,22 +33,58 @@
 
   <h3>Almost Strong Petersen colouring (2024 version)</h3>
 
+  <br>
+  <p>Press the button to enter:</p>
+
   <div class="center">
-    <model-viewer src="aspc2024.glb"
-                  shadow-intensity="1"
-                  alt="3D scene"
-                  auto-rotate
-                  ar
-                  ar-modes="webxr scene-viewer quick-look"
-                  environment-image="neutral"
-                  camera-controls>
+    <model-viewer id="mv"
+      src="aspc2024.glb"
+      alt="3D scene"
+      shadow-intensity="1"
+      auto-rotate
+      camera-controls
+      environment-image="neutral"
+      ar
+      ar-modes="webxr scene-viewer quick-look">
     </model-viewer>
 
-    <br>
-
-    <p class="center">Press the button to enter:</p>
-    <button slot="ar-button" class="ar-button">👋 Go into AR</button>
+    <!-- Button is now OUTSIDE, below, and triggers AR via JS -->
+    <button id="arBtn" class="ar-button">👋 Go into AR</button>
   </div>
 
+  <script>
+    // Wire the external button to model-viewer’s AR API
+    const mv = document.getElementById('mv');
+    const btn = document.getElementById('arBtn');
+
+    function refreshArAvailability() {
+      // If the environment supports AR, enable the button; otherwise disable or hide it
+      if (mv.canActivateAR) {
+        btn.disabled = false;
+        btn.title = "Launch AR";
+      } else {
+        // Choose one: disable (keeps layout) or hide
+        btn.disabled = true;           // keep this if you prefer showing it but disabled
+        // btn.style.display = 'none';  // or hide completely
+        btn.title = "AR not supported on this device/browser";
+      }
+    }
+
+    // model-viewer sets canActivateAR after it loads and when environment changes
+    mv.addEventListener('ar-status', refreshArAvailability);
+    mv.addEventListener('load', refreshArAvailability);
+    // Run once on first paint
+    if (document.readyState !== 'loading') refreshArAvailability();
+    else document.addEventListener('DOMContentLoaded', refreshArAvailability);
+
+    btn.addEventListener('click', async () => {
+      try {
+        await mv.activateAR();
+      } catch (err) {
+        console.error(err);
+        alert('AR failed to start on this device/browser.');
+      }
+    });
+  </script>
 </body>
 </html>
