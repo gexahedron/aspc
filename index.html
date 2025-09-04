@@ -18,17 +18,24 @@
     model-viewer {
       width: 1000px;
       height: 500px;
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
     }
     .ar-button {
+      display: inline-block;
       background-color: #dcffc2;
-      border-radius: 10px;
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      height: 35px;
-      width: 300px;
-      font-size: 24px;
+      border: none;
+      border-radius: 12px;
+      margin-top: 20px;
+      padding: 20px 40px;
+      font-size: 28px;
+      font-weight: bold;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .ar-button:hover {
+      background-color: #b8f59e;
     }
   </style>
   <!-- model-viewer library -->
@@ -39,8 +46,6 @@
 
   <h3>Almost Strong Petersen colouring (2024 version)</h3>
 
-  <p>Press the button to enter:</p>
-
   <div class="center">
     <model-viewer src="aspc2024.glb"
                   shadow-intensity="1"
@@ -50,8 +55,10 @@
                   ar-modes="webxr scene-viewer quick-look"
                   environment-image="neutral"
                   camera-controls>
-      <button slot="ar-button" class="ar-button">👋 Go into AR</button>
     </model-viewer>
+
+    <p class="center">Press the button to enter:</p><br>
+    <button slot="ar-button" class="ar-button">👋 Go into AR</button>
   </div>
 
 </body>
